@@ -11,7 +11,10 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
-
+    /**
+     * Nombre real de la tabla en la base de datos
+     */
+    protected $table = 'users';
     /**
      * The attributes that are mass assignable.
      *
@@ -21,6 +24,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role_id',
     ];
 
     /**
@@ -42,4 +46,30 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+    public function role()
+    /**
+     * Relación: un usuario pertenece a un rol
+     */
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
+    /**
+     * Relación: un usuario puede tener muchas compras
+     */
+    public function purchases()
+    {
+        return $this->hasMany(Purchase::class, 'user_id');
+    }
+    /**
+     * Relación: un usuario puede tener muchos registros de inventarios
+     */
+    public function inventories()
+    {
+        return $this->hasMany(Inventory::class, 'user_id');
+    }
+    /**Relacion un usuario pueede tener muchas transacciones */
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'user_id');
+    }
 }
